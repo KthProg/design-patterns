@@ -2,23 +2,23 @@
 
 namespace DesignPatterns.Patterns
 {
-    public interface IFactoryObject : IHasLogger
+    public interface IFactoryObject : IHasLogger, IPrintsSelf
     {
         string Name { get; }
-        void PrintSelf();
     }
 
-    public abstract class CommonFactoryObject : IFactoryObject
+    public abstract class CommonFactoryObject : CommonLogsSelf, IFactoryObject
     {
-        public CommonFactoryObject(string name, ILogger logger)
+        public CommonFactoryObject(string name, ILogger logger) : base(logger)
         {
             Name = name;
-            Logger = logger;
         }
         public string Name { get; }
-        public ILogger Logger { get; }
 
-        public virtual void PrintSelf() => Logger.Log(Name);
+        public override void PrintSelf()
+        {
+            Logger.Log(Name);
+        }
     }
 
     public class SomeFactoryObject : CommonFactoryObject
@@ -36,13 +36,9 @@ namespace DesignPatterns.Patterns
         IFactoryObject MakeObject();
     }
 
-    public abstract class CommonFactory : IFactory
+    public abstract class CommonFactory : CommonHasLogger, IFactory
     {
-        public CommonFactory(ILogger logger)
-        {
-            Logger = logger;
-        }
-        public ILogger Logger { get; }
+        public CommonFactory(ILogger logger) : base(logger) { }
 
         public abstract IFactoryObject MakeObject();
     }

@@ -29,6 +29,24 @@ namespace DesignPatterns.Console
                 factoryObject.PrintSelf();
             }
 
+            IBuiltObject builtObject1 =
+                new Builder(_logger)
+                    .Start()
+                    .Annoying()
+                    .Loud()
+                    .WithColor(ConsoleColor.Green)
+                    .Build();
+
+            IBuiltObject builtObject2 =
+                new Builder(_logger)
+                    .Start()
+                    .Quiet()
+                    .WithColor(ConsoleColor.Yellow)
+                    .Build();
+
+            builtObject1.PrintSelf();
+            builtObject2.PrintSelf();
+
             SystemConsole.ReadLine();
         }
 
