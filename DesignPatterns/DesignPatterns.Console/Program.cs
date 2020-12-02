@@ -9,8 +9,12 @@ namespace DesignPatterns.Console
     class Program
     {
         private static readonly ILogger _logger;
+
         private static readonly IFactory _factory;
         private static readonly IFactory _otherFactory;
+
+        private static readonly IFactoryMethod _factoryMethod;
+        private static readonly IFactoryMethod _otherFactoryMethod;
 
         static Program()
         {
@@ -19,6 +23,9 @@ namespace DesignPatterns.Console
             // TODO: create via injection library
             _factory = new SomeObjectFactory(_logger);
             _otherFactory = new SomeOtherObjectFactory(_logger);
+
+            _factoryMethod = new SomeFactoryMethod(_logger);
+            _otherFactoryMethod = new SomeOtherFactoryMethod(_logger);
         }
         static void Main(string[] args)
         {
@@ -48,12 +55,23 @@ namespace DesignPatterns.Console
             builtObject1.PrintSelf();
             builtObject2.PrintSelf();
 
+            foreach (IFactoryMethod factoryMethod in FactoryMethods)
+            {
+                IFactoryObject factoryObject = factoryMethod.CreateObject();
+                factoryObject.PrintSelf();
+            }
+
             SystemConsole.ReadLine();
         }
 
         static IEnumerable<IFactory> Factories => new List<IFactory>
         {
             _factory, _otherFactory
+        };
+
+        static IEnumerable<IFactoryMethod> FactoryMethods => new List<IFactoryMethod>
+        {
+            _factoryMethod, _otherFactoryMethod
         };
     }
 }
