@@ -1,4 +1,5 @@
 ﻿using DesignPatterns.Patterns;
+using DesignPatterns.Patterns.FactoryCommon;
 using System;
 using System.Collections.Generic;
 using SystemConsole = System.Console;
