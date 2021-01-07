@@ -61,6 +61,12 @@ namespace DesignPatterns.Console
                 factoryObject.PrintSelf();
             }
 
+            IPrototype prototype = Prototype.InitialPrototype.Clone();
+            for(int i = 0; i < 10; ++i){
+                SystemConsole.WriteLine($"prototype #{prototype.Id} copied");
+                prototype = prototype.Clone();
+            }
+
             SystemConsole.ReadLine();
         }
 

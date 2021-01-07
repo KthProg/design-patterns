@@ -1,7 +1,20 @@
-public interface IPrototype {
-    IPrototype Clone();
-}
+namespace DesignPatterns.Patterns
+{
+    public interface IPrototype {
+        int Id { get; }
+        IPrototype Clone();
+    }
 
-public interface IPrototypeClient {
-    IPrototypeClient Create(IPrototype prototype);
+    public class Prototype : IPrototype {
+        public static IPrototype InitialPrototype => new Prototype(1);
+
+        private Prototype(int id) {
+            Id = id;
+        }
+
+        public int Id { get; private set; }
+
+        public IPrototype Clone() => new Prototype(Id + 1);
+    }
+
 }
