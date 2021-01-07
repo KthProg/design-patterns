@@ -67,6 +67,9 @@ namespace DesignPatterns.Console
                 prototype = prototype.Clone();
             }
 
+            Singleton singleton = Singleton.Instance;
+            SystemConsole.WriteLine($"Singleton created at {singleton.CreationDateTime}");
+
             SystemConsole.ReadLine();
         }
 
