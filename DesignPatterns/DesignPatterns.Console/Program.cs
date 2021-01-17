@@ -70,6 +70,17 @@ namespace DesignPatterns.Console
             Singleton singleton = Singleton.Instance;
             SystemConsole.WriteLine($"Singleton created at {singleton.CreationDateTime}");
 
+            IAddSubtract<int> addSubtract = new AdditionSubtraction();
+            IMultiplyDivide<int> multiplyDivideAdapter = new MultiplyDivideAdapter(addSubtract);
+
+            DivisionResult<int> divisionResult = multiplyDivideAdapter.Divide(10, 3);
+
+            SystemConsole.WriteLine($"{nameof(MultiplyDivideAdapter)}: 10 / 3 = {divisionResult.WholePart} with remainder {divisionResult.Remainder}");
+
+            int multiplicationResult = multiplyDivideAdapter.Multiply(10, 3);
+
+            SystemConsole.WriteLine($"{nameof(MultiplyDivideAdapter)}: 10 x 3 = {multiplicationResult}");
+
             SystemConsole.ReadLine();
         }
 
