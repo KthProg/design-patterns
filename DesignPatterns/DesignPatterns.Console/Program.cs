@@ -81,6 +81,23 @@ namespace DesignPatterns.Console
 
             SystemConsole.WriteLine($"{nameof(MultiplyDivideAdapter)}: 10 x 3 = {multiplicationResult}");
 
+            IWaterPipeBridge hotWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
+            IWaterPipeBridge coldWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
+
+            _logger.Log("Turn on hot");
+            hotWaterPipeBridge.TurnOn();
+            _logger.Log("Turn off hot");
+            hotWaterPipeBridge.TurnOff();
+            _logger.Log("Sprinkling hot");
+            hotWaterPipeBridge.Sprinkle();
+
+            _logger.Log("Turn on cold");
+            coldWaterPipeBridge.TurnOn();
+            _logger.Log("Turn off cold");
+            coldWaterPipeBridge.TurnOff();
+            _logger.Log("Sprinkling cold");
+            coldWaterPipeBridge.Sprinkle();
+
             SystemConsole.ReadLine();
         }
 
