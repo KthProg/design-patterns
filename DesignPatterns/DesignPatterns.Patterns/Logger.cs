@@ -11,14 +11,19 @@ namespace DesignPatterns.Patterns
 
     public interface ILogger
     {
-        void Log(string text, ConsoleColor color = ConsoleColor.White);
+        void Log(string text, ConsoleColor color = ConsoleColor.White, bool isInline = false);
+        
     }
     public class ConsoleLogger : ILogger
     {
-        public void Log(string text, ConsoleColor color = ConsoleColor.White)
+        public void Log(string text, ConsoleColor color = ConsoleColor.White, bool isInline = false)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine(text);
+            if(isInline){
+                Console.Write(text);
+            }else{
+                Console.WriteLine(text);
+            }
             Console.ResetColor();
         }
     }

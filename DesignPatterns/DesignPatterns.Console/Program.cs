@@ -16,6 +16,12 @@ namespace DesignPatterns.Console
         private static readonly IFactoryMethod _factoryMethod;
         private static readonly IFactoryMethod _otherFactoryMethod;
 
+        private static readonly IMultiplyDivide<int> _multiplyDivideAdapter;
+
+        private static readonly IWaterPipeBridge _hotWaterPipeBridge;
+        private static readonly IWaterPipeBridge _coldWaterPipeBridge;
+        private static IComposite _composite;
+
         static Program()
         {
             _logger = new ConsoleLogger();
@@ -26,6 +32,14 @@ namespace DesignPatterns.Console
 
             _factoryMethod = new SomeFactoryMethod(_logger);
             _otherFactoryMethod = new SomeOtherFactoryMethod(_logger);
+
+            IAddSubtract<int> addSubtract = new AdditionSubtraction();
+            _multiplyDivideAdapter = new MultiplyDivideAdapter(addSubtract);
+
+            _hotWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
+            _coldWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
+
+            _composite = _MakeCompositeTree();
         }
         static void Main(string[] args)
         {
@@ -70,45 +84,71 @@ namespace DesignPatterns.Console
             Singleton singleton = Singleton.Instance;
             SystemConsole.WriteLine($"Singleton created at {singleton.CreationDateTime}");
 
-            IAddSubtract<int> addSubtract = new AdditionSubtraction();
-            IMultiplyDivide<int> multiplyDivideAdapter = new MultiplyDivideAdapter(addSubtract);
-
-            DivisionResult<int> divisionResult = multiplyDivideAdapter.Divide(10, 3);
+            DivisionResult<int> divisionResult = _multiplyDivideAdapter.Divide(10, 3);
 
             SystemConsole.WriteLine($"{nameof(MultiplyDivideAdapter)}: 10 / 3 = {divisionResult.WholePart} with remainder {divisionResult.Remainder}");
 
-            int multiplicationResult = multiplyDivideAdapter.Multiply(10, 3);
+            int multiplicationResult = _multiplyDivideAdapter.Multiply(10, 3);
 
             SystemConsole.WriteLine($"{nameof(MultiplyDivideAdapter)}: 10 x 3 = {multiplicationResult}");
 
-            IWaterPipeBridge hotWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
-            IWaterPipeBridge coldWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
-
             _logger.Log("Turn on hot");
-            hotWaterPipeBridge.TurnOn();
+            _hotWaterPipeBridge.TurnOn();
             _logger.Log("Turn off hot");
-            hotWaterPipeBridge.TurnOff();
+            _hotWaterPipeBridge.TurnOff();
             _logger.Log("Sprinkling hot");
-            hotWaterPipeBridge.Sprinkle();
+            _hotWaterPipeBridge.Sprinkle();
 
             _logger.Log("Turn on cold");
-            coldWaterPipeBridge.TurnOn();
+            _coldWaterPipeBridge.TurnOn();
             _logger.Log("Turn off cold");
-            coldWaterPipeBridge.TurnOff();
+            _coldWaterPipeBridge.TurnOff();
             _logger.Log("Sprinkling cold");
-            coldWaterPipeBridge.Sprinkle();
+            _coldWaterPipeBridge.Sprinkle();
+
+            _TraverseCompositeTree(_composite);
 
             SystemConsole.ReadLine();
         }
 
-        static IEnumerable<IFactory> Factories => new List<IFactory>
+        private static IEnumerable<IFactory> Factories => new List<IFactory>
         {
             _factory, _otherFactory
         };
 
-        static IEnumerable<IFactoryMethod> FactoryMethods => new List<IFactoryMethod>
+        private static IEnumerable<IFactoryMethod> FactoryMethods => new List<IFactoryMethod>
         {
             _factoryMethod, _otherFactoryMethod
         };
+
+        private static IComposite _MakeCompositeTree(){
+            IComposite rootComposite = new CompositeA(_logger);
+
+            IComposite childComposite1 = new CompositeB(_logger);
+            IComposite childComposite2 = new CompositeB(_logger);
+
+            IComposite childComposite1_1 = new CompositeC(_logger);
+            IComposite childComposite2_1 = new CompositeC(_logger);
+            IComposite childComposite2_2 = new CompositeC(_logger);
+
+            childComposite1.Add(childComposite1_1);
+            childComposite2.Add(childComposite2_1);
+            childComposite2.Add(childComposite2_2);
+
+            rootComposite.Add(childComposite1);
+            rootComposite.Add(childComposite2);
+
+            return rootComposite;
+        }
+
+        private static void _TraverseCompositeTree(IComposite composite, int depth = 0, int index = 0){
+            _logger.Log($"{new String('\t', depth)}{index}|", isInline: true);
+            composite.PrintSelf();
+
+            for(int compositeChildIndex = 0; compositeChildIndex < composite.ChildrenCount; ++compositeChildIndex){
+                IComposite child = composite.GetChildAt(compositeChildIndex);
+                _TraverseCompositeTree(child, depth: depth + 1, index: compositeChildIndex);
+            }
+        }
     }
 }
