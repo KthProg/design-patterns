@@ -22,6 +22,8 @@ namespace DesignPatterns.Console
         private static readonly IWaterPipeBridge _coldWaterPipeBridge;
         private static IComposite _composite;
 
+        private static IWrapper<GiftBox> _wrapper;
+
         static Program()
         {
             _logger = new ConsoleLogger();
@@ -40,6 +42,8 @@ namespace DesignPatterns.Console
             _coldWaterPipeBridge = new WaterPipeBridge(new HotWaterPipeImp(_logger), _logger);
 
             _composite = _MakeCompositeTree();
+
+            _wrapper = new WrappingPaper(new GiftBox(new Gift("Teddy bear")));
         }
         static void Main(string[] args)
         {
@@ -107,6 +111,12 @@ namespace DesignPatterns.Console
             _coldWaterPipeBridge.Sprinkle();
 
             _TraverseCompositeTree(_composite);
+
+            _logger.Log($"It seems we have a gift! First let's unwrap the {_wrapper.GetType().Name}");
+            GiftBox giftBox = (_wrapper as WrappingPaper).Unwrap();
+            _logger.Log($"We have the {giftBox.GetType().Name} open, now let's take our gift out.");
+            Gift gift = giftBox.Open();
+            _logger.Log($"The gift is a {gift.Name}!");
 
             SystemConsole.ReadLine();
         }
