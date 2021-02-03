@@ -3,6 +3,7 @@ using DesignPatterns.Patterns.FactoryCommon;
 using System;
 using System.Collections.Generic;
 using SystemConsole = System.Console;
+using System.Threading;
 
 namespace DesignPatterns.Console
 {
@@ -24,6 +25,8 @@ namespace DesignPatterns.Console
 
         private static IWrapper<GiftBox> _wrapper;
 
+        private static Facade _facade;
+
         static Program()
         {
             _logger = new ConsoleLogger();
@@ -44,6 +47,8 @@ namespace DesignPatterns.Console
             _composite = _MakeCompositeTree();
 
             _wrapper = new WrappingPaper(new GiftBox(new Gift("Teddy bear")));
+
+            _facade = new Facade(new FacadeChildA(), new FacadeChildB(), new FacadeChildC());
         }
         static void Main(string[] args)
         {
@@ -117,6 +122,9 @@ namespace DesignPatterns.Console
             _logger.Log($"We have the {giftBox.GetType().Name} open, now let's take our gift out.");
             Gift gift = giftBox.Open();
             _logger.Log($"The gift is a {gift.Name}!");
+
+            _logger.Log($"Random divided numbers from facade: {_facade.GetRandomNumbersAndDivideThem()}");
+            _logger.Log($"Random multiplied numbers from facade: {_facade.GetRandomNumbersAndMultiplyThem()}");
 
             SystemConsole.ReadLine();
         }
